@@ -1,11 +1,3 @@
-/* Данеел Дамянов Друмев,
-    спец. КСТ, II курс, 
-    1б гр., ф.№ 21621412,
-    ТУ-Варна */
-
-// Курсова работа ООП1
-// Задание 5.
-
 #include<iostream>
 #include<string>
 #include<algorithm>
@@ -41,7 +33,7 @@ class CLaptop{
     string GetProducer()const{return m_strProducer;}
     int GetCapacity()const{return m_iCapacity;}
     StorageType GetDriveType()const{return m_eStorageType;}
-    
+
     /* I.3. Output stream */
     void Output(ostream& out)const{
         out<<"Manufacturer: "<<m_strProducer<<endl;
@@ -57,10 +49,11 @@ class CLaptop{
         getline(in,m_strProducer);
         cout<<"Screen size: ";
         in>>m_iScreenSize;
-        cout<<"Storage type (0 - SSD, 1 - HDD): ";
-        int m_iStorageType;
-        in>>m_iStorageType;
-        m_eStorageType=(m_iStorageType==0?SSD:HDD);
+        cout<<"Storage type: ";
+        string m_strStorageType;
+        getline(in,m_strStorageType);
+        if(m_strStorageType=="SSD")m_eStorageType=SSD;
+        else if(m_strStorageType=="HDD")m_eStorageType=HDD;
         cout<<"Capacity: ";
         in>>m_iCapacity;
     }
@@ -118,7 +111,7 @@ class CLaptopShop{
     // explicit constructor - by file name
     CLaptopShop(const string& fName){
         // open file and read data
-        ifstream iStream(fName);
+        ifstream iStream(fName,ios::in);
         if(iStream.is_open()){
             readIn(iStream);
             iStream.close();
@@ -184,11 +177,13 @@ class CLaptopShop{
     /* II.7. Maximum sales by disk capacity - return name and № of sales */
     void maxSalesByCapacity(CLaptop::StorageType type,int& iCapacity,int& iNum){
         map<int,int>m_mSalesByCapacity;
+        int iMaxNumSales=0;
         for(const auto& laptop:m_vSales){
+            laptop.GetDriveType();
             if(laptop.GetDriveType()==type)
                 ++m_mSalesByCapacity[laptop.GetCapacity()];
+                iMaxNumSales++;
         }
-        int iMaxNumSales=0;
         for(const auto& pair:m_mSalesByCapacity){
             const auto& capacity=pair.first;
             const auto& num=pair.second;
@@ -212,24 +207,21 @@ int main(){
         const auto& num=pair.second;
         cout<<prod<<" "<<num<<endl;
     }
-
+    
     // Find the manufacturer with the maximum number of sales
     string maxProducer;
     int maxNumSales;
     shop.maxSalesByProducer(maxProducer,maxNumSales);
-    cout<<"Max sales by producer: "<<maxProducer<<" "<<maxNumSales<<endl;
+    cout<<"MAX SALES BY PRODUCER: "<<maxProducer<<" "<<maxNumSales<<endl;
 
     // Find the screen size with the maximum number of sales
     int maxSize;
     shop.maxSalesBySize(maxSize,maxNumSales);
-    cout<<"Max sales by size: "<<maxSize<<" "<<maxNumSales<<endl;
+    cout<<"MAX SALES BY SIZE: "<<maxSize<<" "<<maxNumSales<<endl;
 
     // Find the storage capacity with the maximum number of sales
     int maxCapacity;
     shop.maxSalesByCapacity(CLaptop::SSD,maxCapacity,maxNumSales);
-    cout<<"Max sales by capacity SSD: "<<maxCapacity<<" "<<maxNumSales<<endl;
-    shop.maxSalesByCapacity(CLaptop::HDD,maxCapacity,maxNumSales);
-    cout<<"Max sales by capacity HDD: "<<maxCapacity<<" "<<maxNumSales<<endl;
-    
+    cout<<"MAX SALES BY CAPACITY SSD: "<<maxCapacity<<" "<<maxNumSales<<endl;
     return 0;
 }
