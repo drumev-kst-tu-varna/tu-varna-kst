@@ -8,12 +8,9 @@
 
 #include<iostream>
 #include<string>
-#include<algorithm>
 #include<vector>
 #include<map>
 #include<fstream>
-#include<iterator>
-#include<cstdlib>
 
 using namespace std;
 
