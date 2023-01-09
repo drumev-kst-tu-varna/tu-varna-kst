@@ -20,6 +20,7 @@ class CLaptop{
     string m_strProducer;
     int m_iScreenSize;
     int m_iCapacity;
+    string m_strStorageType;
     public:
     enum StorageType{SSD,HDD}m_eStorageType;
     /* I.1. Constructors */
@@ -55,7 +56,7 @@ class CLaptop{
         cout<<"Screen size: ";
         in>>m_iScreenSize;
         cout<<"Storage type: ";
-        string m_strStorageType;
+        
         getline(in,m_strStorageType);
         if(m_strStorageType=="SSD")m_eStorageType=SSD;
         else if(m_strStorageType=="HDD")m_eStorageType=HDD;
@@ -100,8 +101,10 @@ class CLaptop{
     friend istream& operator>>(istream& in,CLaptop& obj){
         if(&in==&cin){
             cout<<"Manufacturer: "<<"Screen size: ";
+            cout<<"Storage type: "<<"Capacity: ";
         }
         in>>obj.m_strProducer>>obj.m_iScreenSize;
+        in>>obj.m_strStorageType>>obj.m_iCapacity;
         return in;
     }
 
@@ -131,7 +134,8 @@ class CLaptopShop{
     /* II.2. Input stream */
     void readIn(istream& iStream){
         CLaptop laptop;
-        while(iStream>>laptop)m_vSales.push_back(laptop);
+        while(iStream>>laptop)
+            m_vSales.push_back(laptop);
     }
 
     /* II.3. Output stream */
@@ -184,10 +188,9 @@ class CLaptopShop{
         map<int,int>m_mSalesByCapacity;
         int iMaxNumSales=0;
         for(const auto& laptop:m_vSales){
-            laptop.GetDriveType();
-            if(laptop.GetDriveType()==type)
+            if(laptop.GetDriveType()==type){
                 ++m_mSalesByCapacity[laptop.GetCapacity()];
-                iMaxNumSales++;
+            }
         }
         for(const auto& pair:m_mSalesByCapacity){
             const auto& capacity=pair.first;
@@ -215,17 +218,17 @@ int main(){
     
     // Find the manufacturer with the maximum number of sales
     string maxProducer;
-    int maxNumSales;
+    int maxNumSales=0;
     shop.maxSalesByProducer(maxProducer,maxNumSales);
     cout<<"MAX SALES BY PRODUCER: "<<maxProducer<<" "<<maxNumSales<<endl;
 
     // Find the screen size with the maximum number of sales
-    int maxSize;
+    int maxSize=0;
     shop.maxSalesBySize(maxSize,maxNumSales);
     cout<<"MAX SALES BY SIZE: "<<maxSize<<" "<<maxNumSales<<endl;
 
     // Find the storage capacity with the maximum number of sales
-    int maxCapacity;
+    int maxCapacity=0;
     shop.maxSalesByCapacity(CLaptop::SSD,maxCapacity,maxNumSales);
     cout<<"MAX SALES BY CAPACITY SSD: "<<maxCapacity<<" "<<maxNumSales<<endl;
     return 0;
